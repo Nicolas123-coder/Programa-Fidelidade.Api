@@ -1,10 +1,11 @@
 module.exports = {
+  //TODO: set this variables in the .env file
     development: {
       client: 'postgresql',
       connection: {
-        database: 'programafidelidade.api',
+        database: 'postgres',
         user: 'postgres',
-        password: 'postgres',
+        password: 'easypointz-tcc',
         host: '127.0.0.1',
         port: 5432
       },

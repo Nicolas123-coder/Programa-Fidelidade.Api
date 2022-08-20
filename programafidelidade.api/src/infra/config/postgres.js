@@ -1,12 +1,14 @@
 require('dotenv').config()
 
+  //TODO: set this variables in the .env file
 module.exports = {
   herbsCLI: 'postgres',
   client: 'pg',
   connection: {
-    host: '127.0.0.1',
+    host: 'localhost',
     user: 'postgres',
-    password: 'postgres',
-    database: 'programafidelidade.api'
+    password: 'easypointz-tcc',
+    database: 'postgres',
+    port: 5432
   }
 }
