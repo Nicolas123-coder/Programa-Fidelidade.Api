@@ -1,5 +1,4 @@
 require('dotenv').config()
-
   //TODO: set this variables in the .env file
 module.exports = {
   herbsCLI: 'postgres',
