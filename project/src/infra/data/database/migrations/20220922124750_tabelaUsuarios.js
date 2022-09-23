@@ -1,14 +1,15 @@
 
 exports.up = async function (knex) {
-    knex.schema.hasTable('users')
+    knex.schema.hasTable('usuarios')
         .then(function (exists) {
             if (exists) return
             return knex.schema
-                .createTable('users', function (table) {
+                .createTable('usuarios', function (table) {
                     table.string('id').primary()
-                    table.string('nickname')
-                    table.integer('registration_number')
-                    table.string('password')
+                    table.string('email')
+                    table.string('nome')
+                    table.string('senha')
+                    table.string('telefone')
                     table.timestamps()
                 })
         })
@@ -16,5 +17,5 @@ exports.up = async function (knex) {
 
 exports.down = function (knex) {
     return knex.schema
-    .dropTableIfExists('users')
+    .dropTableIfExists('usuarios')
 }

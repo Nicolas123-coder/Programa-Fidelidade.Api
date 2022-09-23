@@ -6,7 +6,7 @@ const UserRepository = require('../../../infra/data/repositories/userRepository'
 const dependency = { UserRepository }
 
 const createUser = injection =>
-  usecase('Create User', {
+  usecase('Cria Usuario', {
     // Input/Request metadata and validation 
     request: request.from(User, { ignoreIDs: true }),
 

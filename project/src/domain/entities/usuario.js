@@ -1,8 +1,8 @@
 const { entity, id, field } = require('@herbsjs/herbs')
 const { herbarium } = require('@herbsjs/herbarium')
 
-const User =
-        entity('User', {
+const Entidade =
+        entity('Usuario', {
           id: id(String),
           email: field(String),
           nome: field(String),
@@ -17,5 +17,5 @@ const User =
 
 module.exports =
   herbarium.entities
-    .add(User, 'User')
+    .add(Entidade, 'Entidade')
     .entity
