@@ -1,20 +1,13 @@
 const { Repository } = require("@herbsjs/herbs2knex")
-const { herbarium } = require('@herbsjs/herbarium')
-const User = require('../../../domain/entities/user')
-const connection = require('../database/connection')
+const { User } = require('../../../domain/entities')
 
-class UserRepository extends Repository {
-    constructor(injection) {
+module.exports = class UserRepository extends Repository {
+    constructor(connection) {
         super({
             entity: User,
             table: "users",
+            ids: ["id"],
             knex: connection
         })
     }
 }
-
-module.exports =
-    herbarium.repositories
-        .add(UserRepository, 'UserRepository')
-        .metadata({ entity: User })
-        .repository

@@ -1,21 +1,10 @@
-const { entity, id, field } = require('@herbsjs/herbs')
-const { herbarium } = require('@herbsjs/herbarium')
+const { entity, field } = require('@herbsjs/herbs')
 
 const User =
         entity('User', {
-          id: id(String),
-          email: field(String),
-          nome: field(String),
-          senha: field(String),
-          categoria: field(String),
-          cnpj: field(String),
-          nomeEstabelecimento: field(String),
-          telefone: field(String),
-          tipoEstabelecimento: field(String),
-          enderecoEstabelecimento: field(String),
+          id: field(Number),
+          nickname: field(String),
+          password: field(String)
         })
 
-module.exports =
-  herbarium.entities
-    .add(User, 'User')
-    .entity
+module.exports = User

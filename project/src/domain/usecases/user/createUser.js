@@ -1,14 +1,13 @@
-const { usecase, step, Ok, Err, request } = require('@herbsjs/herbs')
-const { herbarium } = require('@herbsjs/herbarium')
-const User = require('../../entities/user')
-const UserRepository = require('../../../infra/data/repositories/userRepository')
+const { usecase, step, Ok, Err } = require('@herbsjs/herbs')
+const { User } = require('../../entities')
 
-const dependency = { UserRepository }
-
-const createUser = injection =>
-  usecase('Cria Usuario', {
+const useCase = ({ userRepository }) => () =>
+  usecase('Create User', {
     // Input/Request metadata and validation 
-    request: request.from(User, { ignoreIDs: true }),
+    request: {
+      nickname: String,
+      password: String
+    },
 
     // Output/Response metadata
     response: User,
@@ -17,12 +16,10 @@ const createUser = injection =>
     // authorize: (user) => (user.canCreateUser ? Ok() : Err()),
     authorize: () => Ok(),
 
-    setup: ctx => (ctx.di = Object.assign({}, dependency, injection)),
-
     //Step description and function
     'Check if the User is valid': step(ctx => {
       ctx.user = User.fromJSON(ctx.req)
-      ctx.user.id = Math.floor(Math.random() * 100000).toString()
+      ctx.user.id = Math.floor(Math.random() * 100000)
       
       if (!ctx.user.isValid()) 
         return Err.invalidEntity({
@@ -36,15 +33,9 @@ const createUser = injection =>
     }),
 
     'Save the User': step(async ctx => {
-      const repo = new ctx.di.UserRepository(injection)
-      const user = ctx.user
       // ctx.ret is the return value of a use case
-      return (ctx.ret = await repo.insert(user))
+      return (ctx.ret = await userRepository.insert(ctx.user)) 
     })
   })
 
-module.exports =
-  herbarium.usecases
-    .add(createUser, 'CreateUser')
-    .metadata({ group: 'User', operation: herbarium.crud.create, entity: User })
-    .usecase
+module.exports = useCase

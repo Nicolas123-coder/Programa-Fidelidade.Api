@@ -1,15 +1,11 @@
 const { usecase, step, Ok, Err } = require('@herbsjs/herbs')
-const { herbarium } = require('@herbsjs/herbarium')
-const User = require('../../entities/user')
-const UserRepository = require('../../../infra/data/repositories/userRepository')
+const { User } = require('../../entities')
 
-const dependency = { UserRepository }
-
-const findUser = injection =>
+const useCase = ({ userRepository }) => () =>
   usecase('Find a User', {
     // Input/Request metadata and validation 
     request: {
-      id: String
+      id: Number,
     },
 
     // Output/Response metadata
@@ -19,23 +15,17 @@ const findUser = injection =>
     // authorize: (user) => (user.canFindOneUser ? Ok() : Err()),
     authorize: () => Ok(),
 
-    setup: ctx => (ctx.di = Object.assign({}, dependency, injection)),
-
     'Find and return the User': step(async ctx => {
       const id = ctx.req.id
-      const repo = new ctx.di.UserRepository(injection)
-      const [user] = await repo.findByID(id)
-      if (!user) return Err.notFound({ 
+      const [result] = await userRepository.findByID(id) 
+      if (!result) return Err.notFound({ 
         message: `User entity not found by ID: ${id}`,
         payload: { entity: 'User', id }
       })
+      
       // ctx.ret is the return value of a use case
-      return Ok(ctx.ret = user)
+      return (ctx.ret = User.fromJSON(result))
     })
   })
 
-module.exports =
-  herbarium.usecases
-    .add(findUser, 'FindUser')
-    .metadata({ group: 'User', operation: herbarium.crud.read, entity: User })
-    .usecase
+module.exports = useCase

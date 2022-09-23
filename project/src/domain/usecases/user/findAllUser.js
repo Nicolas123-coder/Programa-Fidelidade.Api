@@ -1,11 +1,7 @@
 const { usecase, step, Ok } = require('@herbsjs/herbs')
-const { herbarium } = require('@herbsjs/herbarium')
-const User = require('../../entities/user')
-const UserRepository = require('../../../infra/data/repositories/userRepository')
+const { User } = require('../../entities')
 
-const dependency = { UserRepository }
-
-const findAllUser = injection =>
+const useCase = ({ userRepository }) => () =>
   usecase('Find all Users', {
     // Input/Request metadata and validation
     request: {
@@ -19,18 +15,12 @@ const findAllUser = injection =>
     //Authorization with Audit
     authorize: () => Ok(),
 
-    setup: ctx => (ctx.di = Object.assign({}, dependency, injection)),
-
     'Find and return all the Users': step(async ctx => {
-      const repo = new ctx.di.UserRepository(injection)
-      const users = await repo.findAll(ctx.req)
+      const result = await userRepository.findAll(ctx.req)
+      
       // ctx.ret is the return value of a use case
-      return Ok(ctx.ret = users)
+      return (ctx.ret = result.map(user => User.fromJSON(user)))
     })
   })
 
-module.exports =
-  herbarium.usecases
-    .add(findAllUser, 'FindAllUser')
-    .metadata({ group: 'User', operation: herbarium.crud.readAll, entity: User })
-    .usecase
+module.exports = useCase

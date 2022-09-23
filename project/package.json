@@ -13,26 +13,25 @@
       "knex:rollback": "npx knex --knexfile knexFile.js migrate:rollback",
       "knex:makeSeeds": "npx knex --knexfile knexFile.js seed:make",
       "knex:runSeeds": "npx knex --knexfile knexFile.js seed:run",
-      "test": "npm run spec",
-      "spec": "herbs spec"
+      "test": "mocha --timeout 999999 --colors --recursive src/**/*.test.js"
     },
     "keywords": ["herbs"],
-    "author": "nicolasdebarros",
+    "author": "nicolas de barros",
     "license": "MIT",
     "dependencies": {
-      "@herbsjs/herbs": "^1.6.2",
-      "@herbsjs/herbarium": "^1.4.0",
-      "@herbsjs/herbsshelf": "^4.0.1",
-      "dotenv": "^16.0.1",
+      "@herbsjs/herbs": "^1.4.2",
+      "@herbsjs/herbs2gql": "^2.0.1",
+      "@herbsjs/herbsshelf": "^2.1.2",
       "deepmerge": "^4.2.2",
-      "nodemon": "^2.0.19",
-      "mocha": "^10.0.0",
+      "dotenv": "^12.0.3",
+      "nodemon": "^2.0.15",
+      "mocha": "^9.1.4",
       "lodash.camelcase": "^4.3.0",
       "sugar-env": "^1.5.14",
-      "@herbsjs/herbs2knex": "^1.5.7",
-      "pg": "^8.7.3",
-      "express": "^4.18.1",
+      "@herbsjs/herbs2knex": "^1.3.1",
+      "pg": "^8.7.1",
+      "express": "^4.17.2",
       "cors": "^2.8.5",
-      "@herbsjs/herbs2rest": "^3.2.1"
+      "@herbsjs/herbs2rest": "^2.0.1"
     }
 }

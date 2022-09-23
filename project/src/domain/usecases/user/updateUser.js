@@ -1,15 +1,15 @@
-const { usecase, step, Ok, Err, request } = require('@herbsjs/herbs')
-const { herbarium } = require('@herbsjs/herbarium')
 const merge = require('deepmerge')
-const User = require('../../entities/user')
-const UserRepository = require('../../../infra/data/repositories/userRepository')
+const { usecase, step, Ok, Err } = require('@herbsjs/herbs')
+const { User } = require('../../entities')
 
-const dependency = { UserRepository }
-
-const updateUser = injection =>
+const useCase = ({ userRepository }) => () =>
   usecase('Update User', {
     // Input/Request metadata and validation 
-    request: request.from(User),
+    request: {
+      id: Number,
+      nickname: String,
+      password: String
+    },
 
     // Output/Response metadata
     response: User,
@@ -18,44 +18,26 @@ const updateUser = injection =>
     // authorize: (user) => (user.canUpdateUser ? Ok() : Err()),
     authorize: () => Ok(),
 
-    setup: ctx => (ctx.di = Object.assign({}, dependency, injection)),
+    //Step description and function
+    'Check if the User is valid': step(async ctx => {
+      const user = await userRepository.findByID(parseInt(ctx.req.id))
+      if(!user) return Err.notFound()
+      const newUser = merge.all([ user, ctx.req ])
+      ctx.user = User.fromJSON(newUser)
 
-    'Retrieve the User': step(async ctx => {
-      const id = ctx.req.id
-      const repo = new ctx.di.UserRepository(injection)
-      const [user] = await repo.findByID(id)
-      ctx.user = user
-      if (user === undefined) return Err.notFound({
-        message: `User not found - ID: ${id}`,
-        payload: { entity: 'User' }
+      if (!ctx.user.isValid()) return Err.invalidEntity({
+        message: 'The User entity is invalid', 
+        payload: { entity: 'User' },  
+        cause: ctx.user.errors
       })
-
-      return Ok(user)
-    }),
-
-    'Check if it is a valid User before update': step(ctx => {
-      const oldUser = ctx.user
-      const newUser = User.fromJSON(merge.all([ oldUser, ctx.req ]))
-      ctx.user = newUser
-
-      return newUser.isValid() ? Ok() : Err.invalidEntity({
-        message: `User is invalid`,
-        payload: { entity: 'User' },
-        cause: newUser.errors
-      })
-
+      
+      return Ok() 
     }),
 
     'Update the User': step(async ctx => {
-      const repo = new ctx.di.UserRepository(injection)
       // ctx.ret is the return value of a use case
-      return (ctx.ret = await repo.update(ctx.user))
+      return (ctx.ret = await userRepository.update(ctx.user)) 
     })
-
   })
 
-module.exports =
-  herbarium.usecases
-    .add(updateUser, 'UpdateUser')
-    .metadata({ group: 'User', operation: herbarium.crud.update, entity: User })
-    .usecase
+module.exports = useCase
