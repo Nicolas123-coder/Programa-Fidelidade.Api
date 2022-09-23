@@ -9,7 +9,6 @@ exports.up = async function (knex) {
                     table.string('nome')
                     table.string('senha')
                     table.string('telefone')
-                    table.timestamps()
                 })
         })
 }

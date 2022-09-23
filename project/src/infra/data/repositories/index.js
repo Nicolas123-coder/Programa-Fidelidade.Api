@@ -1,6 +1,7 @@
 async function factory(conn) {
     return {
-    userRepository: await new (require('./userRepository.js'))(conn)
+    usuarioRepository: await new (require('./usuarioRepository.js'))(conn),
+    estabelecimentoRepository: await new (require('./estabelecimentoRepository.js'))(conn),
 }
 }
 module.exports = factory

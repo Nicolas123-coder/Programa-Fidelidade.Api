@@ -19,8 +19,8 @@
     "author": "nicolas de barros",
     "license": "MIT",
     "dependencies": {
-      "@herbsjs/herbs": "^1.4.2",
-      "@herbsjs/herbs2gql": "^2.0.1",
+      "@herbsjs/herbs": "^1.4.4",
+      "@herbsjs/herbs2gql": "^2.1.7",
       "@herbsjs/herbsshelf": "^2.1.2",
       "deepmerge": "^4.2.2",
       "dotenv": "^12.0.3",

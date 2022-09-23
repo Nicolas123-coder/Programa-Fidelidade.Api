@@ -7,6 +7,8 @@ const usecases = require('../../../domain/usecases')
 const renderShelfHTML = require('@herbsjs/herbsshelf')
 const { generateRoutes } = require('@herbsjs/herbs2rest')
 const repositoriesFactory = require('../../../infra/data/repositories')
+const CriaUsuario = require('../../../domain/usecases/usuario/criaUsuario')
+const CriaEstabelecimento = require('../../../domain/usecases/estabelecimento/criaEstabelecimento')
 
 function cloneUsecases (usecases) {
     return Promise.all(usecases.map(uc => {
@@ -44,9 +46,11 @@ const mapUcToHTTPVerb = {
     }
 }
 
+let repositories
+
 async function prepareRoutes (config) {
     const conn = await db.factory(config)
-    const repositories = await repositoriesFactory(conn)
+    repositories = await repositoriesFactory(conn)
 
     // groupBy group
     const ucByGroup = usecases.reduce((acc, obj) => {
@@ -82,6 +86,39 @@ module.exports = async (app, config) => {
     const verbose = !config.isProd
     const routes = await prepareRoutes(config)
     generateRoutes(routes, router, verbose)
+
+    //CRIAÇÃO DAS ROTAS
+    router.post('/usuario/create', async (req,res) => {
+        try {
+            const ucCriaUsuario = CriaUsuario({
+            usuarioRepository: repositories.usuarioRepository
+            }) ()
+
+            await ucCriaUsuario.authorize()
+            const retorno = await ucCriaUsuario.run(req.body)
+
+            return res.json(retorno)
+        } catch (error) {
+            return res.status(500).json({ message: "Falha ao salvar usuário" })
+        }
+    })
+
+    router.post('/estabelecimento/create', async (req,res) => {
+        try {
+            const ucCriaEstabelecimento = CriaEstabelecimento({
+            estabelecimentoRepository: repositories.estabelecimentoRepository
+            }) ()
+
+            await ucCriaEstabelecimento.authorize()
+            const retorno = await ucCriaEstabelecimento.run(req.body)
+
+            return res.json(retorno)
+        } catch (error) {
+            return res.status(500).json({ message: "Falha ao salvar estabelecimento" })
+        }
+    })
+
+
     app.use(router)
 
     const ucs = await cloneUsecases(usecases)

@@ -10,9 +10,9 @@ exports.up = async function (knex) {
                     table.string('senha')
                     table.string('telefone')
                     table.string('cnpj')
-                    table.string('nomeEstabelecimento')
-                    table.string('tipoEstabelecimento')
-                    table.string('enderecoEstabelecimento')
+                    table.string('nome_estabelecimento')
+                    table.string('tipo_estabelecimento')
+                    table.string('endereco_estabelecimento')
                 })
         })
 }
