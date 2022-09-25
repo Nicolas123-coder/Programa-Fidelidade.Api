@@ -9,6 +9,7 @@ const { generateRoutes } = require('@herbsjs/herbs2rest')
 const repositoriesFactory = require('../../../infra/data/repositories')
 const CriaUsuario = require('../../../domain/usecases/usuario/criaUsuario')
 const CriaEstabelecimento = require('../../../domain/usecases/estabelecimento/criaEstabelecimento')
+const { response } = require('express')
 
 function cloneUsecases (usecases) {
     return Promise.all(usecases.map(uc => {
@@ -97,6 +98,10 @@ module.exports = async (app, config) => {
             await ucCriaUsuario.authorize()
             const retorno = await ucCriaUsuario.run(req.body)
 
+            if(retorno.isErr) {
+                return res.status(400).json(retorno.err)
+            }
+
             return res.json(retorno)
         } catch (error) {
             return res.status(500).json({ message: "Falha ao salvar usuário" })
@@ -111,6 +116,10 @@ module.exports = async (app, config) => {
 
             await ucCriaEstabelecimento.authorize()
             const retorno = await ucCriaEstabelecimento.run(req.body)
+
+            if(retorno.isErr) {
+                return res.status(400).json(retorno.err)
+            }
 
             return res.json(retorno)
         } catch (error) {

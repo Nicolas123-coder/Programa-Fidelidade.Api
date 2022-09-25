@@ -18,7 +18,7 @@ const useCase = ({ usuarioRepository }) => () =>
       
       if (!ctx.usuario.isValid()) 
         return Err.invalidEntity({
-          message: 'The User entity is invalid', 
+          message: 'A entidade Usuário é inválida', 
           payload: { entity: 'Usuario' },
           cause: ctx.usuario.errors 
         })
@@ -26,19 +26,19 @@ const useCase = ({ usuarioRepository }) => () =>
       return Ok() 
     }),
 
-    //TODO: Implementar verificação
-    
-    // 'Verifica se já existe um e-mail cadastrado': step(async ctx => {
-    //   const resultado = await usuarioRepository.findByID(ctx.usuario.id)
+    'Verifica se já existe um e-mail cadastrado': step(async ctx => {
+      const usuario = await usuarioRepository.buscaPorId(ctx.usuario.email)
 
-    //   console.log(resultado)
+      if (usuario[0]) {
+        return Err.alreadyExists({
+          message: 'O e-mail já está cadastrado para o usuário', 
+          payload: { entity: 'Usuario' },
+          cause: ctx.usuario.errors 
+        })
+      }
 
-    //   if (resultado[0].email == ctx.usuario.email) {
-    //     console.log("eroooooooooo pqp")
-    //   }
-
-    //   return Ok()
-    // }),
+      return Ok()
+    }),
 
     'Salva o Usuario': step(async ctx => {
       return (ctx.ret = await usuarioRepository.insert(ctx.usuario)) 

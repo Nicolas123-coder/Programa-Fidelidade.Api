@@ -7,11 +7,12 @@ describe('Cria um estabelecimento', () => {
 
   describe('Estabelecimento Válido', () => {
 
-    it('Deve adicionar um estabelecimento se ele for válido', async () => {
+    it.only('Deve adicionar um estabelecimento se ele for válido', async () => {
       // Given
       const injection = {
         estabelecimentoRepository: new ( class EstabelecimentoRepository {
           async insert(user) { return (user) }
+          async buscaPorId() { return [] }
         })
       }
 
@@ -42,7 +43,7 @@ describe('Cria um estabelecimento', () => {
 
   describe('Estabelecimento Inválido', () => {
 
-    it('Não deve criar um estabelecimento quando inválido', async () => {
+    it.only('Não deve criar um estabelecimento quando inválido', async () => {
       // Given
       const injection = {}
 
@@ -58,6 +59,32 @@ describe('Cria um estabelecimento', () => {
           telefone: "982772121"
         }
     }
+      // When
+      const uc = criaEstabelecimento(injection)()
+      await uc.authorize(authorizedUser)
+      const ret = await uc.run(req)
+
+      // Then
+      assert.ok(ret.isErr)
+    }),
+
+    it.only('Não deve cadastrar um estabelecimento quando ele já existir', async () => {
+      // Given
+      const injection = { 
+        estabelecimentoRepository: new ( class EstabelecimentoRepository {
+          async buscaPorId() { return [ { },{ } ] }
+        })
+      }
+
+      const req = {
+        usuario : {
+          email: "3",
+          nome: "Nicolas de Barros",
+          senha: "senha567",
+          telefone: "982772121"
+        }
+      }
+
       // When
       const uc = criaEstabelecimento(injection)()
       await uc.authorize(authorizedUser)

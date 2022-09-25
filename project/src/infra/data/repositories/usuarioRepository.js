@@ -10,4 +10,11 @@ module.exports = class UsuarioRepository extends Repository {
             knex: connection
         })
     }
+
+    async buscaPorId(id) {
+        const usuario = await this.runner()
+        .where({ email: id })
+
+        return usuario
+    }
 }

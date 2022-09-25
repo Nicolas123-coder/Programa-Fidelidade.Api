@@ -26,6 +26,20 @@ const useCase = ({ estabelecimentoRepository }) => () =>
       return Ok() 
     }),
 
+    'Verifica se já existe um e-mail cadastrado': step(async ctx => {
+      const estabelecimento = await estabelecimentoRepository.buscaPorId(ctx.estabelecimento.email)
+
+      if (estabelecimento[0]) {
+        return Err.alreadyExists({
+          message: 'O e-mail já está cadastrado para o estabelecimento', 
+          payload: { entity: 'Estabelecimento' },
+          cause: ctx.estabelecimento.errors 
+        })
+      }
+
+      return Ok()
+    }),
+
     'Salva o Estabelecimento': step(async ctx => {
       return (ctx.ret = await estabelecimentoRepository.insert(ctx.estabelecimento)) 
     })
