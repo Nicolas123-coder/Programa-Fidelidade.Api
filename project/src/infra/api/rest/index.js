@@ -9,6 +9,7 @@ const { generateRoutes } = require('@herbsjs/herbs2rest')
 const repositoriesFactory = require('../../../infra/data/repositories')
 const CriaUsuario = require('../../../domain/usecases/usuario/criaUsuario')
 const CriaEstabelecimento = require('../../../domain/usecases/estabelecimento/criaEstabelecimento')
+const Autenticacao = require('../../../domain/usecases/login')
 const { response } = require('express')
 
 function cloneUsecases (usecases) {
@@ -89,6 +90,28 @@ module.exports = async (app, config) => {
     generateRoutes(routes, router, verbose)
 
     //CRIAÇÃO DAS ROTAS
+
+    router.post('/login', async (req, res) => {
+        try {
+            const ucAutenticacao = Autenticacao({
+                usuarioRepository: repositories.usuarioRepository,
+                estabelecimentoRepository: repositories.estabelecimentoRepository
+            }) ()
+
+            await ucAutenticacao.authorize()
+
+            const retorno = await ucAutenticacao.run(req.body)
+
+            if(retorno.isErr) {
+                return res.status(400).json(retorno.err)
+            }
+
+            return res.json(retorno)
+        } catch (error) {
+            return res.status(500).json({ message: "Falha na autenticação" })
+        }
+    })
+
     router.post('/usuario/create', async (req,res) => {
         try {
             const ucCriaUsuario = CriaUsuario({
