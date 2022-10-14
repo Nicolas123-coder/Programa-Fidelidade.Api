@@ -3,9 +3,9 @@ require('dotenv').config()
 module.exports = {
   client: 'pg',
   connection: {
-    host: process.env.DB_HOST,
+    host: 'database-fidely-2.cd4zglx5jkmp.sa-east-1.rds.amazonaws.com',
     user: 'postgres',
-    password: process.env.DB_PASSWORD,
-    database: process.env.DB_DATABASE
+    password: 'fidely123#',
+    database: 'postgres'
   }
 }

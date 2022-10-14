@@ -4,10 +4,10 @@ module.exports = {
   development: {
     client: 'postgresql',
     connection: {
-      database: process.env.DB_DATABASE,
+      database: 'postgres',
       user: 'postgres',
-      password: process.env.DB_PASSWORD,
-      host: process.env.DB_HOST,
+      password: 'fidely123#',
+      host: 'database-fidely-2.cd4zglx5jkmp.sa-east-1.rds.amazonaws.com',
       port: 5432
     },
     migrations: {
