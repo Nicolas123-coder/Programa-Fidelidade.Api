@@ -9,6 +9,7 @@ const { generateRoutes } = require('@herbsjs/herbs2rest')
 const repositoriesFactory = require('../../../infra/data/repositories')
 const CriaUsuario = require('../../../domain/usecases/usuario/criaUsuario')
 const CriaEstabelecimento = require('../../../domain/usecases/estabelecimento/criaEstabelecimento')
+const CriaPrograma = require('../../../domain/usecases/estabelecimento/criaProgramaFidelidade')
 const Autenticacao = require('../../../domain/usecases/login')
 const { response } = require('express')
 
@@ -147,6 +148,26 @@ module.exports = async (app, config) => {
             return res.json(retorno)
         } catch (error) {
             return res.status(500).json({ message: "Falha ao salvar estabelecimento" })
+        }
+    })
+
+    router.post('/estabelecimento/createProgramaFidelidade', async (req,res) => {
+        try {
+            const ucCriaPrograma = CriaPrograma({
+                programaRepository: repositories.programaRepository
+            }) ()
+
+            await ucCriaPrograma.authorize()
+            const retorno = await ucCriaPrograma.run(req.body)
+
+            if(retorno.isErr) {
+                return res.status(400).json(retorno.err)
+            }
+
+            return res.json(retorno)
+        } catch (error) {
+            console.log(error)
+            return res.status(500).json({ message: "Falha ao salvar programa de fidelidade" })
         }
     })
 

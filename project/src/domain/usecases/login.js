@@ -2,7 +2,7 @@ const { usecase, step, Ok, Err } = require('@herbsjs/herbs')
 const { User, Usuario, Estabelecimento } = require('../../domain/entities')
 
 // TODO: fazer um usecase de login para cada caso (usuario e estabelecimento)
-//       no front ter um radio de se é estabelecimento ou usuario 
+//       no front ter um radio de se é estabelecimento ou usuario
 
 const useCase = ({ usuarioRepository, estabelecimentoRepository }) => () =>
   usecase('Autentica um usuário', {
@@ -17,6 +17,7 @@ const useCase = ({ usuarioRepository, estabelecimentoRepository }) => () =>
     authorize: () => Ok(),
 
     'Busca um usuário e autentica ele': step(async ctx => {
+        console.log(ctx.req)
         if (ctx.req.tipoUsuario == 'usuario') {
             const [result] = await usuarioRepository.buscaPorId(ctx.req.email)
                 
@@ -40,7 +41,6 @@ const useCase = ({ usuarioRepository, estabelecimentoRepository }) => () =>
     }),
 
     'Busca um estabelecimento e autentica ele': step(async ctx => {
-        console.log(ctx.req.tipoUsuario)
         if (ctx.req.tipoUsuario == 'estabelecimento') {
             const [result] = await estabelecimentoRepository.buscaPorId(ctx.req.email)
                 
