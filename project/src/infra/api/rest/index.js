@@ -148,7 +148,7 @@ module.exports = async (app, config) => {
             return res.json(retorno)
         } catch (error) {
             console.log(error)
-            return res.status(500).json({ message: "Falha ao salvar estabelecimento" })
+            return res.status(500).json({ message: "Falha ao salvar estabelecimento", erro: error })
         }
     })
 
