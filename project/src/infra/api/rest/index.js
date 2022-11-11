@@ -8,6 +8,8 @@ const renderShelfHTML = require('@herbsjs/herbsshelf')
 const { generateRoutes } = require('@herbsjs/herbs2rest')
 const repositoriesFactory = require('../../../infra/data/repositories')
 const CriaUsuario = require('../../../domain/usecases/usuario/criaUsuario')
+const UpdateUsuario = require('../../../domain/usecases/usuario/atualizaUsuario')
+const UpdateEstabelecimento = require('../../../domain/usecases/estabelecimento/atualizaEstabelecimento')
 const CriaEstabelecimento = require('../../../domain/usecases/estabelecimento/criaEstabelecimento')
 const CriaPrograma = require('../../../domain/usecases/estabelecimento/criaProgramaFidelidade')
 const Autenticacao = require('../../../domain/usecases/login')
@@ -132,6 +134,47 @@ module.exports = async (app, config) => {
             return res.status(500).json({ message: "Falha ao salvar usuário" })
         }
     })
+
+    router.put('/usuario/update', async (req,res) => {
+        try {
+            const ucUpdateUsuario = UpdateUsuario({
+            usuarioRepository: repositories.usuarioRepository
+            }) ()
+
+            await ucUpdateUsuario.authorize()
+            const retorno = await ucUpdateUsuario.run(req.body)
+
+            if(retorno.isErr) {
+                return res.status(400).json(retorno.err)
+            }
+
+            return res.json(retorno)
+        } catch (error) {
+            return res.status(500).json({ message: "Falha ao atualizar usuário" })
+        }
+    })
+
+    router.put('/estabelecimento/update', async (req,res) => {
+        try {
+            const ucupdateEstabelecimento = UpdateEstabelecimento({
+                estabelecimentoRepository: repositories.estabelecimentoRepository
+            }) ()
+
+            await ucupdateEstabelecimento.authorize()
+            const retorno = await ucupdateEstabelecimento.run(req.body)
+
+            if(retorno.isErr) {
+                return res.status(400).json(retorno.err)
+            }
+
+            return res.json(retorno)
+        } catch (error) {
+            console.log(error)
+            return res.status(500).json({ message: "Falha ao atualizar estabelecimento" })
+        }
+    })
+
+
 
     router.post('/estabelecimento/create', async (req,res) => {
         try {

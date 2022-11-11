@@ -3,7 +3,7 @@ const { usecase, step, Ok, Err } = require('@herbsjs/herbs')
 const { User } = require('../../entities')
 
 const useCase = ({ userRepository }) => () =>
-  usecase('Update User', {
+  usecase('Update Usuario', {
     // Input/Request metadata and validation 
     request: {
       id: Number,
@@ -21,7 +21,9 @@ const useCase = ({ userRepository }) => () =>
     //Step description and function
     'Check if the User is valid': step(async ctx => {
       const user = await userRepository.findByID(parseInt(ctx.req.id))
+
       if(!user) return Err.notFound()
+
       const newUser = merge.all([ user, ctx.req ])
       ctx.user = User.fromJSON(newUser)
 

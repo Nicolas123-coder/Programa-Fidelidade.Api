@@ -11,6 +11,8 @@ module.exports = class UsuarioRepository extends Repository {
         })
     }
 
+    //TODO: Mudar pra buscar pelo ID de fato,
+    //N fizemos isso agr pq tem usecase usando esse método
     async buscaPorId(id) {
         const estabelecimento = await this.runner()
         .where({ email: id })
