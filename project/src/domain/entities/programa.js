@@ -4,7 +4,10 @@ const Programa =
         entity('Programa', {
             id: field(Number),
             idEstabelecimento: field(String),
-            nomePrograma: field(String),
+            nome: field(String),
+            descricao: field(String),
+            dataInicio: field(String),
+            dataTermino: field(String),
             pontosNecessarios: field(Number),
             premio: field(String),
         })
