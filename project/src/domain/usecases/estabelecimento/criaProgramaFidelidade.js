@@ -12,7 +12,6 @@ const useCase = ({ programaRepository }) => () =>
     authorize: () => Ok(),
 
     'Checa se o programa é valido': step(ctx => {
-      console.log(ctx.req.programaFidelidade)
       ctx.programa = Programa.fromJSON(ctx.req.programaFidelidade)
 
       ctx.programa.id = Math.floor(Math.random() * 100000)
